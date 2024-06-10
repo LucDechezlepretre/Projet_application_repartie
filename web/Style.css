@@ -1,0 +1,17 @@
+#map, #report {
+    height: 90vh;
+    width: 100vw;
+}
+#map {
+    display: block;
+}
+#report {
+    display: none;
+}
+
+.custom-popup {
+    background-color: rgba(148, 87, 235, 0.8); // Violet pastel avec une opacité de 0.8
+border-radius: 10px; // Coins arrondis
+padding: 10px; // Espacement intérieur
+color: white; // Couleur du texte
+}
