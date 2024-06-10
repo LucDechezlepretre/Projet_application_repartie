@@ -10,6 +10,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
+import org.json.JSONObject;
 
 public class MainHttp{
     public static void main(String[] args) {
@@ -28,7 +29,9 @@ public class MainHttp{
 
             //System.out.println(response.statusCode());
             if(response.statusCode() >= 200 && response.statusCode() <= 399){
-                System.out.println(response.body());  
+                //System.out.println(response.body()); 
+                JSONObject json = new JSONObject(response.body());
+                System.out.println(json);
             }            
         } catch (IOException | InterruptedException e) {
             // TODO Auto-generated catch block
