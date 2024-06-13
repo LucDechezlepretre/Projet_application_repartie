@@ -2,16 +2,55 @@
     height: 90vh;
     width: 100vw;
 }
+
 #map {
     display: block;
 }
+
 #report {
     display: none;
+    margin-left: 50px;
 }
 
-.custom-popup {
-    background-color: rgba(148, 87, 235, 0.8); // Violet pastel avec une opacité de 0.8
-border-radius: 10px; // Coins arrondis
-padding: 10px; // Espacement intérieur
-color: white; // Couleur du texte
+#meteo {
+    display: none;
+    margin-left: 50px;
 }
+
+
+#titre {
+    margin-top: 25px;
+    margin-bottom: 30px;
+    margin-left: -30px;
+    text-decoration: underline;
+}
+
+.nom {
+    color: grey;
+    margin-bottom: 1px;
+    font-size: 12px;
+    margin-left: -40px;
+}
+
+.sousTitre {
+    text-decoration: underline;
+    margin-left: -15px;
+}
+
+.infoMeteoCarre {
+    /*centre le bloc*/
+    margin-left: 30%;
+    /*taille du bloc*/
+    width: 40%;
+    background-color: #e8c4ff;
+    padding: 15px;
+    padding-left: 5%;
+    margin-top: 20px;
+}
+
+nav{
+    background-color: #e8c4ff;
+}
+
+
+
