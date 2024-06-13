@@ -22,6 +22,9 @@ public class LancerClient {
 
             String jsonReserverTable = s.reserverTable(1, "Richardin", "Killian", 4, "0623518114");
             System.out.println(jsonReserverTable);
+
+            String jsonAjoutRestaurant = s.ajouterRestaurant("Chez le Luc", "1 rue de Killian", 0, 0); 
+            System.out.println(jsonAjoutRestaurant);
         } catch(RemoteException e){
             System.out.println("Erreur lors de l'utilisation des méthode du service central");
             e.printStackTrace();

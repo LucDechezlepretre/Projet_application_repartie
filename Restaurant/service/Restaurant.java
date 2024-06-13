@@ -19,11 +19,11 @@ public class Restaurant {
         return this.adresse;
     }
 
-    public double getLatitude(){
-        return this.lat;
+    public String getLatitude(){
+        return String.valueOf(this.lat).replace(',', '.');
     }
     
-    public double getLongitude(){
-        return this.lon;
+    public String getLongitude(){
+        return String.valueOf(this.lon).replace(',', '.');
     }
 }

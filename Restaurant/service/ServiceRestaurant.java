@@ -14,7 +14,7 @@ public class ServiceRestaurant implements ServiceCentral {
             connection = DriverManager.getConnection(
                 "jdbc:oracle:thin:@charlemagne.iutnc.univ-lorraine.fr:1521:infodb",
                 "richar467u",
-                ""
+                "Hocepupa@4"
             );
         } catch (SQLException e) {
             System.out.println("Database connection failed");
@@ -41,7 +41,28 @@ public class ServiceRestaurant implements ServiceCentral {
             Calendar calendar = Calendar.getInstance();
             Date currentDate = calendar.getTime();
 
-            return "{\"code\":500,\"status\":false,\"message\":\"" +  e.getMessage()+ "\",\"serverTime\":" + currentDate.toString() + "}";
+            return "{\"code\":500,\"status\":false,\"message\":\"" +  e.getMessage()+ "\",\"serverTime\":\"" + currentDate.toString() + "\"}";
+        }
+    }
+
+    public String ajouterRestaurant(String nom, String adresse, double lat, double lon) throws RemoteException{
+        try {
+            String requete = """
+                    INSERT INTO restaurants (nom, adresse, latitude, longitude) VALUES (?, ?, ?, ?)
+                    """;
+            PreparedStatement stmt = connection.prepareStatement(requete);
+            stmt.setString(1, nom);
+            stmt.setString(2, adresse);
+            stmt.setDouble(3, lat);
+            stmt.setDouble(4, lon);
+            stmt.executeUpdate();
+            
+            return "{\"code\":200,\"status\":true,\"data\":{\"message\":\"Votre restaurant a bien été enregistré sur la carte.\"}}";
+        } catch(SQLException e) {
+            Calendar calendar = Calendar.getInstance();
+            Date currentDate = calendar.getTime();
+
+            return "{\"code\":500,\"status\":false,\"message\":\"" +  e.getMessage()+ "\",\"serverTime\":\"" + currentDate.toString() + "\"}";
         }
     }
 
@@ -51,7 +72,7 @@ public class ServiceRestaurant implements ServiceCentral {
         int indexTable = trouverTableDisponible(idRestaurant, nbConvives);
 
         if(indexTable == -1){
-            return "{\"code\":500,\"status\":false,\"message\":\"Table non disponible à cette horaire}";
+            return "{\"code\":500,\"status\":false,\"message\":\"Table non disponible à cette horaire.\"}";
         }
 
         try {
@@ -73,12 +94,12 @@ public class ServiceRestaurant implements ServiceCentral {
             Calendar calendar = Calendar.getInstance();
             Date currentDate = calendar.getTime();
             
-            return "{\"code\":200,\"status\":true,\"data\":{\"message\":Votre table a bien été réservée.},\"serverTime\":" + currentDate.toString() + "}";
+            return "{\"code\":200,\"status\":true,\"data\":{\"message\":\"Votre table a bien été réservée.\"},\"serverTime\":\"" + currentDate.toString() + "\"}";
         } catch (SQLException e) {
             Calendar calendar = Calendar.getInstance();
             Date currentDate = calendar.getTime();
 
-            return "{\"code\":500,\"status\":false,\"message\":\"" +  e.getMessage()+ "\",\"serverTime\":" + currentDate.toString() + "}";
+            return "{\"code\":500,\"status\":false,\"message\":\"" +  e.getMessage()+ "\",\"serverTime\":\"" + currentDate.toString() + "\"}";
         }
     }
 

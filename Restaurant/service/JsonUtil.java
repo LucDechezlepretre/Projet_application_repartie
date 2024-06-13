@@ -20,7 +20,7 @@ public class JsonUtil {
     }
 
     public static String toJson(Restaurant restaurant) {
-        return String.format("{\"adresse\":\"%s\",\"latitude\":%f,\"longitude\":%f,\"nom\":\"%s\"}",
+        return String.format("{\"adresse\":\"%s\",\"latitude\":%s,\"longitude\":%s,\"nom\":\"%s\"}",
                 restaurant.getAdresse(), restaurant.getLatitude(), restaurant.getLongitude(), restaurant.getNom());
     }
 }
