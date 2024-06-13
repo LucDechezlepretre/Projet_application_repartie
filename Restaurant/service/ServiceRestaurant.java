@@ -14,7 +14,7 @@ public class ServiceRestaurant implements ServiceCentral {
             connection = DriverManager.getConnection(
                 "jdbc:oracle:thin:@charlemagne.iutnc.univ-lorraine.fr:1521:infodb",
                 "richar467u",
-                "Hocepupa@4"
+                ""
             );
         } catch (SQLException e) {
             System.out.println("Database connection failed");
