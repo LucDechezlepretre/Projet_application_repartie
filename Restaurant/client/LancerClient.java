@@ -14,7 +14,7 @@ public class LancerClient {
             reg = LocateRegistry.getRegistry(args[0], Integer.parseInt(args[1]));
         }
         
-        ServiceCentral s = (ServiceCentral) reg.lookup("RestaurantService");
+        ServiceBD s = (ServiceBD) reg.lookup("RestaurantService");
         
         try{
             String jsonRestaurants = s.getRestaurants();
