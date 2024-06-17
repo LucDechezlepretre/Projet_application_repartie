@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Récupération des données des stations
             const stationInfoUrl = 'https://transport.data.gouv.fr/gbfs/nancy/station_information.json';
             const stationStatusUrl = 'https://transport.data.gouv.fr/gbfs/nancy/station_status.json';
+            const ensSupUrl = 'https://data.enseignementsup-recherche.gouv.fr/api/explore/v2.1/catalog/datasets/fr-esr-implantations_etablissements_d_enseignement_superieur_publics/records?where=siege_lib%3D%27Universit%C3%A9%20de%20Lorraine%27&limit=100';
 
             try {
                 // Récupération des données
@@ -58,6 +59,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 const stationInfo = infoData.data.stations;
                 const stationStatus = statusData.data.stations;
 
+                const ensSupReponse = await fetch(ensSupUrl);
+                const ensSup = await ensSupReponse.json();
+                const ensSupResultats = ensSup["results"];
+
+
+                ensSupResultats.forEach( e => {
+                    // console.log(e);
+                }); 
+
+                console.log(ensSupResultats[0].coordonnees);
+                // const ensSupPositions = ensSupReponse["result"]
+
                 // Création d'une map pour les données des stations
                 const stationMap = new Map();
                 stationStatus.forEach(status => {
@@ -65,19 +78,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 // Affichage des stations
+                const stationMarker = L.icon({
+                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    tooltipAnchor: [16, -28],
+                    shadowSize: [41, 41]
+                });
+
+                const etablissementsMarker = L.icon({
+                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    tooltipAnchor: [16, -28],
+                    shadowSize: [41, 41]
+                });
+
                 stationInfo.forEach(station => {
                     const status = stationMap.get(station.station_id);
                     if (status) {
-                        const redMarker = L.icon({
-                            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
-                            iconSize: [25, 41],
-                            iconAnchor: [12, 41],
-                            popupAnchor: [1, -34],
-                            tooltipAnchor: [16, -28],
-                            shadowSize: [41, 41]
-                        });
-
-                        const marker = L.marker([station.lat, station.lon], {icon: redMarker}).addTo(map);
+                        const marker = L.marker([station.lat, station.lon], {icon: stationMarker}).addTo(map);
 
                         // Affichage des informations des stations
                         marker.bindPopup(`
@@ -88,6 +110,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     `);
                     }
                 });
+
+                ensSupResultats.forEach( etablissement => {
+                    const marker = L.marker([etablissement.coordonnees['lat'], etablissement.coordonnees['lon']], {icon: etablissementsMarker}).addTo(map);
+
+                    marker.bindPopup(`
+                       <strong>${etablissement.implantation_lib}</strong><br>
+                       Adresse : ${etablissement.adresse_uai}<br>
+                       Université : ${etablissement.siege_lib}
+                        `);
+                });
+
             } catch (error) {
                 console.error('Erreurs de récupération des données:', error);
             }
@@ -154,17 +187,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error('Erreur de récupération des données météo:', error);
             }
         }
-
-        /**
-         * Ecouteur d'événement pour le bouton de la météo
-         */
-        document.addEventListener('DOMContentLoaded', function () {
-            const buttonMeteoElement = document.getElementById('actuMeteo');
-            buttonMeteoElement.addEventListener('click', function (event) {
-                event.preventDefault();
-                affichageMeteo();
-            });
-        });
 
         /**
          * Ecouteur d'événement pour le bouton de la carte
