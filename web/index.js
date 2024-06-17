@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         // Déclaration des boutons
-        let buttonMapElement = document.getElementById('bikeMapNancy');
+        let buttonMapElement = document.getElementById('infoNancy');
         let buttonCompteRendu = document.getElementById('compteRendu');
         let buttonMeteoElement = document.getElementById('actuMeteo');
 
