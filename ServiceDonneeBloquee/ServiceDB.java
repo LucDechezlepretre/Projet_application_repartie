@@ -33,7 +33,7 @@ public class ServiceDB implements ServiceDonneesBloquees{
 
             //System.out.println(response.statusCode());
             if(response.statusCode() >= 200 && response.statusCode() <= 399){
-                //System.out.println(response.body()); 
+                System.out.println(response.body()); 
                 json = response.body();
 
 

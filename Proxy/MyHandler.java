@@ -27,18 +27,20 @@ public class MyHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         String typeRequete = exchange.getRequestMethod();
         Registry reg;
-        System.out.println(exchange.getRequestURI());
         if (typeRequete.equalsIgnoreCase("GET")) {
             if(exchange.getRequestURI().toString().equals(donneesBloquees)){
                 reg = LocateRegistry.getRegistry(this.ipServiceDonneeBloquee);
                 try{
                     ServiceDonneesBloquees s = (ServiceDonneesBloquees) reg.lookup("DonneeBloquee");
                     try{
+                        System.out.println(s.recupererDonneesBloquees());
                         JSONObject json = new JSONObject(s.recupererDonneesBloquees());
+                        System.out.println("JSON récupéré");
                         byte[] fileContent = json.toString().getBytes();
+                        exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+
                         exchange.sendResponseHeaders(200, fileContent.length);
                         OutputStream responseBody = exchange.getResponseBody();
-    
                         responseBody.write(fileContent);
                         responseBody.close();
                         //System.out.println(json);
@@ -46,19 +48,8 @@ public class MyHandler implements HttpHandler {
                         System.out.println("Erreur lors de l'enregistrement du service sur le serveur central");
                         e.printStackTrace();
                     }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }catch(NotBoundException e){
-                    System.out.println("Aie aie aie !");   
-                    e.printStackTrace();   
-                }
-                catch(RemoteException e){
-                    System.out.println("Erreur lors de la récupération du service");
-                    e.printStackTrace();
-                }
-                catch(Exception e){
-                    e.printStackTrace();
+                    System.out.println("Aie aie aie !");      
                 }
             }
             else if(exchange.getRequestURI().toString().equals(restaurant)){
@@ -69,13 +60,13 @@ public class MyHandler implements HttpHandler {
                     System.out.println("RESTAURANT SERVICE");
                     try{
                         JSONObject json = new JSONObject(s.getRestaurants());
+                        System.out.println("JSON RECUPERE");
                         byte[] fileContent = json.toString().getBytes();
                         exchange.sendResponseHeaders(200, fileContent.length);
                         OutputStream responseBody = exchange.getResponseBody();
     
                         responseBody.write(fileContent);
                         responseBody.close();
-                        System.out.println(json);
                     } catch(RemoteException e){
                         System.out.println("Erreur lors de l'enregistrement du service sur le serveur central");
                         e.printStackTrace();

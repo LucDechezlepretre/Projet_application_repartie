@@ -139,27 +139,37 @@ document.addEventListener('DOMContentLoaded', function () {
         const traficUrl = 'http://127.0.0.1:8000/donneesbloquees'; 
         try {
             // Récupération des données
-            const traficReponse = await fetch(traficUrl);
-            const trafic = await traficReponse.json();
-            const traficResultats = trafic["incidents"];
+            fetch(traficUrl).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+            }).then(data => {
+                const traficResultats = data["incidents"];
 
-            const traficMarker = L.icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                tooltipAnchor: [16, -28],
-                shadowSize: [41, 41]
+                const traficMarker = L.icon({
+                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    tooltipAnchor: [16, -28],
+                    shadowSize: [41, 41]
+                });
+
+                traficResultats.forEach(trafic => {
+                    let coordonnees = trafic.location.polyline.split(' ');
+                    console.log(coordonnees);
+                    const marker = L.marker([coordonnees[0], coordonnees[1]], {icon: traficMarker}).addTo(map);
+
+                    marker.bindPopup(`
+                        <strong>${trafic.short_description}</strong><br>
+                        Début : ${trafic.starttime.split('T')[0]}<br>
+                        Fin : ${trafic.endtime.split('T')[0]}<br>
+                            `);
+                });
+            })
+            .catch(error => {
+                console.log(error);
             });
-
-            traficResultats.forEach(trafic => {
-                const marker = L.marker([trafic.polyline['lat'], trafic.polyline['lon']], {icon: traficMarker}).addTo(map);
-
-                marker.bindPopup(`
-                       <strong>${trafic.description}</strong><br>
-                        `);
-            });
-
         } catch (error) {
             console.error('Erreurs de récupération des données:', error);
         }
