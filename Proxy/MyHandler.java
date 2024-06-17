@@ -65,7 +65,7 @@ public class MyHandler implements HttpHandler {
                 System.out.println("ServiceRestaurant est détecté LETS GOOOOOOOOOOOOOOOOOOO");
                 reg = LocateRegistry.getRegistry(this.ipServiceRestaurant);
                 try{
-                    ServiceCentral s = (ServiceCentral) reg.lookup("RestaurantService");
+                    ServiceBD s = (ServiceBD) reg.lookup("RestaurantService");
                     System.out.println("RESTAURANT SERVICE");
                     try{
                         JSONObject json = new JSONObject(s.getRestaurants());
