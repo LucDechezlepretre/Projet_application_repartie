@@ -18,7 +18,17 @@ document.addEventListener('DOMContentLoaded', function () {
     /**
      * Fonction pour afficher les informations des stations de vélos
      */
-    function visualiserMaps() {
+    async function affichageMap(map) {
+        await recuperationVelo(map);
+        await recuperationResto(map);
+        await recuperationTrafic(map);
+    }
+
+
+    /**
+     * Fonction pour afficher les informations des stations de vélos
+     */
+    async function visualiserMaps() {
         // Affichage de la carte
         mapElement.style.display = 'block';
         rapportElement.style.display = 'none';
@@ -104,21 +114,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
+
     /**
      * Fonction pour récupérer les informations des restaurants
      * @returns {Promise<void>}
      */
+
     async function recuperationResto() {
         // Remplacer 'stationInfoUrl' par l'URL réelle qui fournit les données des restaurants
-        //const stationInfoUrl = 'URL_API';
+        const stationInfoUrl = '194.214.170.56:8000/restaurants';
 
         try {
             // Récupération des données
-            //const response = await fetch(stationInfoUrl);
-            //const data = await response.json();
-            //const restaurants = data.data.restaurants;
-
-            restaurants = "{\"data\": { \"restaurants\": [{\"adresse\":\"1 rue de Killian\",\"latitude\":0.0,\"longitude\":0.0,\"nom\":\"Chez le Luc\"},{\"adresse\":\"1 rue de Killian\",\"latitude\":0.0,\"longitude\":0.0,\"nom\":\"Chez le Luc\"},{\"adresse\":\"1 rue de Killian\",\"latitude\":0.0,\"longitude\":0.0,\"nom\":\"Chez le Luc\"},{\"adresse\":\"1 rue de Killian\",\"latitude\":0.0,\"longitude\":0.0,\"nom\":\"Chez le Luc\"},{\"adresse\":\"1 rue de Killian\",\"latitude\":0.0,\"longitude\":0.0,\"nom\":\"Chez le Luc\"},{\"adresse\":\"1 rue de Killian\",\"latitude\":0.0,\"longitude\":0.0,\"nom\":\"Chez le Luc\"},{\"adresse\":\"1 rue de Killian\",\"latitude\":0.0,\"longitude\":0.0,\"nom\":\"Chez le Luc\"},{\"adresse\":\"1 rue de Killian\",\"latitude\":0.0,\"longitude\":0.0,\"nom\":\"Chez le Luc\"},{\"adresse\":\"1 Rue de Nancy, 54000 Nancy\",\"latitude\":48.692054,\"longitude\":6.184417,\"nom\":\"Restaurant Le Nancy\"},{\"adresse\":\"2 Place Stanislas, 54000 Nancy\",\"latitude\":48.693722,\"longitude\":6.183439,\"nom\":\"Bistro de la Place\"},{\"adresse\":\"3 Rue des Carmes, 54000 Nancy\",\"latitude\":48.694374,\"longitude\":6.182967,\"nom\":\"Chez René\"}]}}"
+            const response = await fetch(stationInfoUrl);
+            const data = await response.json();
+            const restaurants = data.data.restaurants;
 
             // Affichage des restaurants sur la carte
             restaurants.forEach(resto => {
@@ -139,6 +149,41 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         } catch (error) {
             console.error('Erreurs de récupération des données restaurants:', error);
+        }
+    }
+
+
+    /**
+     * Fonction pour récupérer les informations de trafic et les afficher sur la carte
+     * @param {L.Map} map - L'instance de la carte Leaflet sur laquelle afficher les informations de trafic
+     * @returns {Promise<void>}
+     */
+    async function recuperationTrafic(map) {
+        const trafficUrl = 'http://194.214.170.56:8000/donneesbloquees';
+
+        try {
+            // Récupération des données de trafic
+            const response = await fetch(trafficUrl);
+            const data = await response.json();
+            const trafficIncidents = data.incidents;
+
+            // Affichage des incidents sur la carte
+            trafficIncidents.forEach(incident => {
+                const incidentIcon = L.icon({
+                    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x-red.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    tooltipAnchor: [16, -28],
+                    shadowSize: [41, 41]
+                });
+
+                L.marker([incident.latitude, incident.longitude], {icon: incidentIcon})
+                    .addTo(map)
+                    .bindPopup(`<b>${incident.type}</b><br>${incident.description}`);
+            });
+        } catch (error) {
+            console.log('Erreur de récupération des données de trafic:', error);
         }
     }
 
@@ -220,6 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
             rapportElement.style.display = 'none';
             meteoElement.style.display = 'block';
             affichageMeteo();
+            recuperationTrafic(map);
         });
         // Affichage de la carte
         if (mapInitialisation) {
@@ -236,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function () {
         meteoElement.style.display = 'none';
         rapportElement.style.display = 'block';
     });
-});
+
 
 
 /**
@@ -251,6 +297,3 @@ document.addEventListener('DOMContentLoaded', function () {
 
     affichageMap(map);
 });
-
-)
-;
