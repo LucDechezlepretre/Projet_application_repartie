@@ -5,7 +5,7 @@ import java.rmi.registry.LocateRegistry;
 
 public class LancerService {
     public static void main(String[] args) {
-        ServiceRestaurant serviceRestaurant = new ServiceRestaurant();
+        ServiceRestaurant serviceRestaurant = new ServiceRestaurant("config.ini");
 
         try {
             ServiceCentral serviceCentral = (ServiceCentral) UnicastRemoteObject.exportObject(serviceRestaurant, 0);

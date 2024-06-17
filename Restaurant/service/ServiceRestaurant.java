@@ -20,12 +20,16 @@ public class ServiceRestaurant implements ServiceCentral {
             String ligne = fichin.readLine();
             while (ligne != null) {
                 String[] tab = ligne.split("=");
-                InfoDB.add(tab[1]);
+                InfoDB.add(tab[1].trim());
                 ligne = fichin.readLine();
             }
-        fichin.close();
+            
+            fichin.close();
+
             // Connection vers la base de données
-            connection = DriverManager.getConnection(InfoDB.get(0), InfoDB.get(1), InfoDB.get(2))
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+
+            connection = DriverManager.getConnection(InfoDB.get(0), InfoDB.get(1), InfoDB.get(2));
         } catch (SQLException e) {
             System.out.println("Database connection failed");
             e.printStackTrace();
@@ -35,6 +39,9 @@ public class ServiceRestaurant implements ServiceCentral {
         } catch (IOException e){
             System.out.println("Impossible de lire le fichier ");
             e.printStackTrace();  
+        } catch (ClassNotFoundException e){
+            System.out.println("la classe des driver n'a pas été ");
+            e.printStackTrace();
         }
     }
 
