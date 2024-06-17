@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
         /**
          * Fonction pour afficher les informations des stations de vélos
          */
-        function visualiserMaps() {
+        function affichageMaps() {
             // Affichage de la carte
             mapElement.style.display = 'block';
             rapportElement.style.display = 'none';
@@ -35,19 +35,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 maxZoom: 18,
             }).addTo(map);
 
-            affichageMap(map)
+            affichageVelo(map);
+            affichageEcole(map);
+            affichageTrafic(map);
             mapInitialisation = false;
         }
 
         /**
          * Fonction pour afficher les informations des stations de vélos
          */
-        async function affichageMap(map) {
+        async function affichageVelo(map) {
             // Récupération des données des stations
             const stationInfoUrl = 'https://transport.data.gouv.fr/gbfs/nancy/station_information.json';
             const stationStatusUrl = 'https://transport.data.gouv.fr/gbfs/nancy/station_status.json';
-            const ensSupUrl = 'https://data.enseignementsup-recherche.gouv.fr/api/explore/v2.1/catalog/datasets/fr-esr-implantations_etablissements_d_enseignement_superieur_publics/records?where=siege_lib%3D%27Universit%C3%A9%20de%20Lorraine%27&limit=100';
-
             try {
                 // Récupération des données
                 const infoResponse = await fetch(stationInfoUrl);
@@ -59,18 +59,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 const stationInfo = infoData.data.stations;
                 const stationStatus = statusData.data.stations;
 
-                const ensSupReponse = await fetch(ensSupUrl);
-                const ensSup = await ensSupReponse.json();
-                const ensSupResultats = ensSup["results"];
-
-
-                ensSupResultats.forEach( e => {
-                    // console.log(e);
-                });
-
-                console.log(ensSupResultats[0].coordonnees);
-                // const ensSupPositions = ensSupReponse["result"]
-
                 // Création d'une map pour les données des stations
                 const stationMap = new Map();
                 stationStatus.forEach(status => {
@@ -79,16 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Affichage des stations
                 const stationMarker = L.icon({
-                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
-                    iconSize: [25, 41],
-                    iconAnchor: [12, 41],
-                    popupAnchor: [1, -34],
-                    tooltipAnchor: [16, -28],
-                    shadowSize: [41, 41]
-                });
-
-                const etablissementsMarker = L.icon({
-                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
                     iconSize: [25, 41],
                     iconAnchor: [12, 41],
                     popupAnchor: [1, -34],
@@ -110,8 +89,34 @@ document.addEventListener('DOMContentLoaded', function () {
                     `);
                     }
                 });
+            } catch (error) {
+                console.error('Erreurs de récupération des données:', error);
+            }
+        }
 
-                ensSupResultats.forEach( etablissement => {
+        /**
+         * Fonction pour afficher les écoles supperieurs
+         */
+        async function affichageEcole(map) {
+            // Récupération des données de la station
+            const ensSupUrl = 'https://data.enseignementsup-recherche.gouv.fr/api/explore/v2.1/catalog/datasets/fr-esr-implantations_etablissements_d_enseignement_superieur_publics/records?where=siege_lib%3D%27Universit%C3%A9%20de%20Lorraine%27&limit=100';
+
+            try {
+                // Récupération des données
+                const ensSupReponse = await fetch(ensSupUrl);
+                const ensSup = await ensSupReponse.json();
+                const ensSupResultats = ensSup["results"];
+
+                const etablissementsMarker = L.icon({
+                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    tooltipAnchor: [16, -28],
+                    shadowSize: [41, 41]
+                });
+
+                ensSupResultats.forEach(etablissement => {
                     const marker = L.marker([etablissement.coordonnees['lat'], etablissement.coordonnees['lon']], {icon: etablissementsMarker}).addTo(map);
 
                     marker.bindPopup(`
@@ -126,41 +131,45 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-
     /**
-     * Fonction pour récupérer les informations des restaurants
-     * @returns {Promise<void>}
+     * Fonction pour afficher le trafic routier
      */
-
-    async function recuperationResto() {
-        // Remplacer 'stationInfoUrl' par l'URL réelle qui fournit les données des restaurants
-        const stationInfoUrl = '194.214.170.56:8000/restaurants';
-
+    async function affichageTrafic(map) {
+        // Récupération des données de la station
+        const traficUrl = 'http://127.0.0.1:8000/donneesbloquees'; 
         try {
             // Récupération des données
-            const response = await fetch(stationInfoUrl);
-            const data = await response.json();
-            const restaurants = data.data.restaurants;
+            const traficReponse = await fetch(traficUrl);
+            const trafic = await traficReponse.json();
+            const traficResultats = trafic["incidents"];
 
-            // Affichage des restaurants sur la carte
-            restaurants.forEach(resto => {
-                if (resto.latitude !== 0 && resto.longitude !== 0) { // Vérifier que les coordonnées sont valides
-                    const pinkIcon = L.icon({
-                        iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x-pink.png',
-                        iconSize: [25, 41],
-                        iconAnchor: [12, 41],
-                        popupAnchor: [1, -34],
-                        tooltipAnchor: [16, -28],
-                        shadowSize: [41, 41]
-                    });
-
-                    L.marker([resto.latitude, resto.longitude], {icon: pinkIcon})
-                        .addTo(map)
-                        .bindPopup(`<b>${resto.nom}</b><br>${resto.adresse}`);
-                }
+            const traficMarker = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                tooltipAnchor: [16, -28],
+                shadowSize: [41, 41]
             });
+
+            traficResultats.forEach(trafic => {
+                const marker = L.marker([trafic.polyline['lat'], trafic.polyline['lon']], {icon: traficMarker}).addTo(map);
+
+                marker.bindPopup(`
+                       <strong>${trafic.description}</strong><br>
+                        `);
+            });
+
         } catch (error) {
-            console.error('Erreurs de récupération des données restaurants:', error);
+            console.error('Erreurs de récupération des données:', error);
+        }
+    }
+
+        // Ajout de la fonction addDays à la classe Date
+        Date.prototype.addDays = function (days) {
+            let date = new Date(this.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
         }
 
         /**
@@ -169,47 +178,6 @@ document.addEventListener('DOMContentLoaded', function () {
          */
         async function affichageMeteo() {
             const weatherUrl = 'https://www.infoclimat.fr/public-api/gfs/json?_ll=48.67103,6.15083&_auth=ARsDFFIsBCZRfFtsD3lSe1Q8ADUPeVRzBHgFZgtuAH1UMQNgUTNcPlU5VClSfVZkUn8AYVxmVW0Eb1I2WylSLgFgA25SNwRuUT1bPw83UnlUeAB9DzFUcwR4BWMLYwBhVCkDb1EzXCBVOFQoUmNWZlJnAH9cfFVsBGRSPVs1UjEBZwNkUjIEYVE6WyYPIFJjVGUAZg9mVD4EbwVhCzMAMFQzA2JRMlw5VThUKFJiVmtSZQBpXGtVbwRlUjVbKVIuARsDFFIsBCZRfFtsD3lSe1QyAD4PZA%3D%3D&_c=19f3aa7d766b6ba91191c8be71dd1ab2';
-    /**
-     * Fonction pour récupérer les informations de trafic et les afficher sur la carte
-     * @param {L.Map} map - L'instance de la carte Leaflet sur laquelle afficher les informations de trafic
-     * @returns {Promise<void>}
-     */
-    async function recuperationTrafic(map) {
-        const trafficUrl = 'http://194.214.170.56:8000/donneesbloquees';
-
-        try {
-            // Récupération des données de trafic
-            const response = await fetch(trafficUrl);
-            const data = await response.json();
-            const trafficIncidents = data.incidents;
-
-            // Affichage des incidents sur la carte
-            trafficIncidents.forEach(incident => {
-                const incidentIcon = L.icon({
-                    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x-red.png',
-                    iconSize: [25, 41],
-                    iconAnchor: [12, 41],
-                    popupAnchor: [1, -34],
-                    tooltipAnchor: [16, -28],
-                    shadowSize: [41, 41]
-                });
-
-                L.marker([incident.latitude, incident.longitude], {icon: incidentIcon})
-                    .addTo(map)
-                    .bindPopup(`<b>${incident.type}</b><br>${incident.description}`);
-            });
-        } catch (error) {
-            console.log('Erreur de récupération des données de trafic:', error);
-        }
-    }
-
-
-    /**
-     * Fonction pour afficher les informations météo
-     * @returns {Promise<void>}
-     */
-    async function affichageMeteo() {
-        const weatherUrl = 'https://www.infoclimat.fr/public-api/gfs/json?_ll=48.67103,6.15083&_auth=ARsDFFIsBCZRfFtsD3lSe1Q8ADUPeVRzBHgFZgtuAH1UMQNgUTNcPlU5VClSfVZkUn8AYVxmVW0Eb1I2WylSLgFgA25SNwRuUT1bPw83UnlUeAB9DzFUcwR4BWMLYwBhVCkDb1EzXCBVOFQoUmNWZlJnAH9cfFVsBGRSPVs1UjEBZwNkUjIEYVE6WyYPIFJjVGUAZg9mVD4EbwVhCzMAMFQzA2JRMlw5VThUKFJiVmtSZQBpXGtVbwRlUjVbKVIuARsDFFIsBCZRfFtsD3lSe1QyAD4PZA%3D%3D&_c=19f3aa7d766b6ba91191c8be71dd1ab2';
 
             try {
                 // Récupération des données
@@ -264,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function () {
          */
         buttonMapElement.addEventListener('click', function (event) {
             event.preventDefault();
-            visualiserMaps();
+            affichageMaps();
         });
 
         /**
@@ -287,33 +255,11 @@ document.addEventListener('DOMContentLoaded', function () {
             meteoElement.style.display = 'block';
             affichageMeteo();
         });
+
+
         // Affichage de la carte
         if (mapInitialisation) {
-            visualiserMaps();
+            affichageMaps();
         }
-    });
-
-    /**
-     * Ecouteur d'événement pour le bouton du compte rendu
-     */
-    buttonCompteRendu.addEventListener('click', function (event) {
-        event.preventDefault();
-        mapElement.style.display = 'none';
-        meteoElement.style.display = 'none';
-        rapportElement.style.display = 'block';
-    });
-
-
-
-/**
- * Appel de la fonction d'affichage de la carte lorsque le DOM est chargé
- */
-document.addEventListener('DOMContentLoaded', function () {
-    const map = L.map('map').setView([48.6921, 6.1844], 13);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 18,
-    }).addTo(map);
-
-    affichageMap(map);
-});
+    }
+);
