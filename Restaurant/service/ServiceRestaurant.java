@@ -61,7 +61,13 @@ public class ServiceRestaurant implements ServiceBD {
                     result.getDouble(4), result.getDouble(5))); 
             }
             
-            return new JSONObject(restaurants).toString();
+            String res = "{\"restaurants\" : [";
+            for(Restaurant r : restaurants){
+                res += new JSONObject(r).toString();
+                res += ",";
+            }
+            res += "]}";
+            return res;
         } catch(SQLException e) {
             Calendar calendar = Calendar.getInstance();
             Date currentDate = calendar.getTime();
