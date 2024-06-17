@@ -11,10 +11,12 @@ import org.json.JSONObject;
 
 public class MyHandler implements HttpHandler {
     private String ipServiceDonneeBloquee;
+    private String ipServiceRestaurant;
     private static String donneesBloquees = "/donneesbloquees";
     private static String restaurant = "/restaurant";
-    public MyHandler(String ipSDB){
+    public MyHandler(String ipSDB, String ipSR){
         this.ipServiceDonneeBloquee = ipSDB;
+        this.ipServiceRestaurant = ipSR;
     }
     /**
      * 1) Type requete.GET
@@ -25,8 +27,8 @@ public class MyHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         String typeRequete = exchange.getRequestMethod();
         Registry reg;
+        System.out.println(exchange.getRequestURI());
         if (typeRequete.equalsIgnoreCase("GET")) {
-            //System.out.println(exchange.getRequestURI().toString());
             if(exchange.getRequestURI().toString().equals(donneesBloquees)){
                 reg = LocateRegistry.getRegistry(this.ipServiceDonneeBloquee);
                 try{
@@ -36,6 +38,7 @@ public class MyHandler implements HttpHandler {
                         byte[] fileContent = json.toString().getBytes();
                         exchange.sendResponseHeaders(200, fileContent.length);
                         OutputStream responseBody = exchange.getResponseBody();
+    
                         responseBody.write(fileContent);
                         responseBody.close();
                         //System.out.println(json);
@@ -43,14 +46,55 @@ public class MyHandler implements HttpHandler {
                         System.out.println("Erreur lors de l'enregistrement du service sur le serveur central");
                         e.printStackTrace();
                     }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }catch(NotBoundException e){
-                    System.out.println("Aie aie aie !");      
+                    System.out.println("Aie aie aie !");   
+                    e.printStackTrace();   
+                }
+                catch(RemoteException e){
+                    System.out.println("Erreur lors de la récupération du service");
+                    e.printStackTrace();
+                }
+                catch(Exception e){
+                    e.printStackTrace();
                 }
             }
-            else if(exchange.getRequestURI().equals(restaurant)){
-                
+            else if(exchange.getRequestURI().toString().equals(restaurant)){
+                System.out.println("ServiceRestaurant est détecté LETS GOOOOOOOOOOOOOOOOOOO");
+                reg = LocateRegistry.getRegistry(this.ipServiceRestaurant);
+                try{
+                    ServiceCentral s = (ServiceCentral) reg.lookup("RestaurantService");
+                    System.out.println("RESTAURANT SERVICE");
+                    try{
+                        JSONObject json = new JSONObject(s.getRestaurants());
+                        byte[] fileContent = json.toString().getBytes();
+                        exchange.sendResponseHeaders(200, fileContent.length);
+                        OutputStream responseBody = exchange.getResponseBody();
+    
+                        responseBody.write(fileContent);
+                        responseBody.close();
+                        System.out.println(json);
+                    } catch(RemoteException e){
+                        System.out.println("Erreur lors de l'enregistrement du service sur le serveur central");
+                        e.printStackTrace();
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }catch(NotBoundException e){
+                    e.printStackTrace();   
+                    System.out.println("Aie aie aie !");      
+                }
+                catch(RemoteException e){
+                    System.out.println("Erreur lors de la récupération du service");
+                    e.printStackTrace();
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
             }
-                
-        }
+        }       
     }
 }
