@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class ServiceRestaurant implements ServiceCentral {
+import org.json.JSONObject;
+
+public class ServiceRestaurant implements ServiceBD {
 
     Connection connection;
 
@@ -59,7 +61,7 @@ public class ServiceRestaurant implements ServiceCentral {
                     result.getDouble(4), result.getDouble(5))); 
             }
             
-            return JsonUtil.toJson(restaurants);
+            return new JSONObject(restaurants).toString();
         } catch(SQLException e) {
             Calendar calendar = Calendar.getInstance();
             Date currentDate = calendar.getTime();

@@ -8,7 +8,7 @@ public class LancerService {
         ServiceRestaurant serviceRestaurant = new ServiceRestaurant("config.ini");
 
         try {
-            ServiceCentral serviceCentral = (ServiceCentral) UnicastRemoteObject.exportObject(serviceRestaurant, 0);
+            ServiceBD serviceCentral = (ServiceBD) UnicastRemoteObject.exportObject(serviceRestaurant, 0);
 
             try {
                 Registry reg = LocateRegistry.createRegistry(1099);
