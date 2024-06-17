@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,17 +12,29 @@ public class ServiceRestaurant implements ServiceCentral {
 
     Connection connection;
 
-    public ServiceRestaurant(){
+    public ServiceRestaurant(String fichierINI){
         try {
+            ArrayList<String> InfoDB = new ArrayList<>();
+
+            BufferedReader fichin = new BufferedReader(new FileReader(fichierINI));
+            String ligne = fichin.readLine();
+            while (ligne != null) {
+                String[] tab = ligne.split("=");
+                InfoDB.add(tab[1]);
+                ligne = fichin.readLine();
+            }
+        fichin.close();
             // Connection vers la base de données
-            connection = DriverManager.getConnection(
-                "jdbc:oracle:thin:@charlemagne.iutnc.univ-lorraine.fr:1521:infodb",
-                "richar467u",
-                "Hocepupa@4"
-            );
+            connection = DriverManager.getConnection(InfoDB.get(0), InfoDB.get(1), InfoDB.get(2))
         } catch (SQLException e) {
             System.out.println("Database connection failed");
             e.printStackTrace();
+        } catch (FileNotFoundException e){
+            System.out.println("Ficier ini non trouvé");
+            e.printStackTrace();            
+        } catch (IOException e){
+            System.out.println("Impossible de lire le fichier ");
+            e.printStackTrace();  
         }
     }
 
