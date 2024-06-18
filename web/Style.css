@@ -17,12 +17,36 @@
     margin-left: 50px;
 }
 
+filterVelos {
+    padding-right: 50px;
+}
 
 #titre {
     margin-top: 25px;
     margin-bottom: 30px;
     margin-left: -30px;
     text-decoration: underline;
+}
+
+#reservation {
+        background-color: #5f8bea;
+    margin-top: 10px;
+        color: white;
+        /* Suppression de la bordure */
+        border: none;
+        /* Arrondir les coins du bouton */
+        border-radius: 5px;
+        /* Positionnement du bouton */
+        position: absolute;
+        /* Centrage du bouton */
+        top: calc(80%);
+        left: 50%;
+        transform: translateX(-50%);
+}
+
+#reservation:hover {
+    background-color: white;
+    color: #5f8bea;
 }
 
 .nom {
@@ -43,9 +67,17 @@
     /*taille du bloc*/
     width: 40%;
     background-color: #e8c4ff;
-    padding: 15px;
-    padding-left: 5%;
+    padding: 15px 15px 15px 5%;
     margin-top: 20px;
+}
+
+.filter-options {
+    background: #d5a6f3;
+    display: flex;
+}
+
+.filtre{
+    margin-left: 15%;
 }
 
 nav{
