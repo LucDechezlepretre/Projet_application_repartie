@@ -1,26 +1,30 @@
+
+
 document.addEventListener('DOMContentLoaded', function () {
     // Déclaration des variables
     let mapElement = document.getElementById('map');
     let rapportElement = document.getElementById('report');
     let meteoElement = document.getElementById('meteo');
     const infoMeteoElement = document.getElementById('infoMeteo');
-
-
+ 
     // Déclaration des boutons
     let buttonMapElement = document.getElementById('infoNancy');
     let buttonCompteRendu = document.getElementById('compteRendu');
     let buttonMeteoElement = document.getElementById('actuMeteo');
-
+    let popupReservationElement = document.querySelector('.popupReservation');
+ 
+ 
     // Déclaration des cases à cocher pour les filtres
+    let filtreOptions = document.getElementById('filter-options')
     let filterVeloElement = document.getElementById('filterVelo');
     let filterTraficElement = document.getElementById('filterTrafic');
     let filterEcoleElement = document.getElementById('filterEcole');
     let filterRestaurantElement = document.getElementById('filterRestaurant');
-
+ 
     // Déclaration des variables pour la carte
     let mapInitialisation = true;
     let map;
-
+ 
     /**
      * Fonction pour afficher les informations des stations de vélos
      */
@@ -29,18 +33,18 @@ document.addEventListener('DOMContentLoaded', function () {
         mapElement.style.display = 'block';
         rapportElement.style.display = 'none';
         meteoElement.style.display = 'none';
-
+ 
         // Si la carte n'est pas initialisée, on la supprime
         if (!mapInitialisation) {
             map.remove();
         }
-
+ 
         map = L.map('map').setView([48.6921, 6.1844], 13);
-
+ 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
         }).addTo(map);
-
+ 
         if (filterVeloElement.checked) {
             affichageVelo(map);
         }
@@ -55,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         mapInitialisation = false;
     }
-
+ 
     /**
      * Fonction pour afficher les informations des stations de vélos
      */
@@ -67,19 +71,19 @@ document.addEventListener('DOMContentLoaded', function () {
             // Récupération des données
             const infoResponse = await fetch(stationInfoUrl);
             const infoData = await infoResponse.json();
-
+ 
             const statusResponse = await fetch(stationStatusUrl);
             const statusData = await statusResponse.json();
-
+ 
             const stationInfo = infoData.data.stations;
             const stationStatus = statusData.data.stations;
-
+ 
             // Création d'une map pour les données des stations
             const stationMap = new Map();
             stationStatus.forEach(status => {
                 stationMap.set(status.station_id, status);
             });
-
+ 
             // Affichage des stations
             const stationMarker = L.icon({
                 iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
@@ -89,20 +93,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 tooltipAnchor: [16, -28],
                 shadowSize: [41, 41]
             });
-
+ 
             stationInfo.forEach(station => {
                 const status = stationMap.get(station.station_id);
                 if (status) {
                     const marker = L.marker([station.lat, station.lon], {icon: stationMarker}).addTo(map);
-
+ 
                     // Affichage des informations des stations
                     marker.bindPopup(`
-                        <div>
                         <strong>${station.name}</strong><br>
                         Adresse: ${station.address}<br>
                         Vélos disponibles: ${status.num_bikes_available}<br>
-                        Places libres: ${status.num_docks_available}                      
-                        </div>
+                        Places libres: ${status.num_docks_available}  
+               
                     `);
                 }
             });
@@ -110,20 +113,20 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Erreurs de récupération des données:', error);
         }
     }
-
+ 
     /**
      * Fonction pour afficher les écoles supperieurs
      */
     async function affichageEcole(map) {
         // Récupération des données de la station
         const ensSupUrl = 'https://data.enseignementsup-recherche.gouv.fr/api/explore/v2.1/catalog/datasets/fr-esr-implantations_etablissements_d_enseignement_superieur_publics/records?where=siege_lib%3D%27Universit%C3%A9%20de%20Lorraine%27&limit=100';
-
+ 
         try {
             // Récupération des données
             const ensSupReponse = await fetch(ensSupUrl);
             const ensSup = await ensSupReponse.json();
             const ensSupResultats = ensSup["results"];
-
+ 
             const etablissementsMarker = L.icon({
                 iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
                 iconSize: [25, 41],
@@ -132,22 +135,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 tooltipAnchor: [16, -28],
                 shadowSize: [41, 41]
             });
-
+ 
             ensSupResultats.forEach(etablissement => {
                 const marker = L.marker([etablissement.coordonnees['lat'], etablissement.coordonnees['lon']], {icon: etablissementsMarker}).addTo(map);
-
+ 
                 marker.bindPopup(`
                        <strong>${etablissement.implantation_lib}</strong><br>
                        Adresse : ${etablissement.adresse_uai}<br>
                        Université : ${etablissement.siege_lib}
                         `);
             });
-
+ 
         } catch (error) {
             console.error('Erreurs de récupération des données:', error);
         }
     }
-
+ 
     /**
      * Fonction pour afficher le trafic routier
      */
@@ -162,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }).then(data => {
                 const traficResultats = data["incidents"];
-
+ 
                 const traficMarker = L.icon({
                     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
                     iconSize: [25, 41],
@@ -171,16 +174,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     tooltipAnchor: [16, -28],
                     shadowSize: [41, 41]
                 });
-
+ 
                 traficResultats.forEach(trafic => {
                     let coordonnees = trafic.location.polyline.split(' ');
                     const marker = L.marker([coordonnees[0], coordonnees[1]], {icon: traficMarker}).addTo(map);
-
+ 
                     marker.bindPopup(`
                         <strong>${trafic.short_description}</strong><br>
                         Début : ${trafic.starttime.split('T')[0]}<br>
                         Fin : ${trafic.endtime.split('T')[0]}<br>
-                        
+                       
                             `);
                 });
             })
@@ -191,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Erreurs de récupération des données:', error);
         }
     }
-
+ 
     /**
      * Fonction pour afficher les restaurants stockées dans la ville
      */
@@ -206,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }).then(data => {
                 const restaurantResultats = data["restaurants"];
-
+ 
                 const restaurantMarker = L.icon({
                     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
                     iconSize: [25, 41],
@@ -215,15 +218,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     tooltipAnchor: [16, -28],
                     shadowSize: [41, 41]
                 });
-
+ 
                 restaurantResultats.forEach(restaurant => {
                     const marker = L.marker([restaurant.latitude, restaurant.longitude], {icon: restaurantMarker}).addTo(map);
-
+ 
                     marker.bindPopup(`
                         <div>
                             <strong>${restaurant.nom}</strong><br>
-                            Adresse : ${restaurant.adresse}<br>
-                            <button id="reservation" onclick="ouvrirModalReservation('${station.name}')">Réserver</button>
+                            Adresse : ${restaurant.adresse}<br><br>
+                            <button id="reservation" onclick="popupReservation('${restaurant.nom}')">Réserver</button>
                        </div>
                             `);
                 });
@@ -235,36 +238,36 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Erreurs de récupération des données des restaurants:', error);
         }
     }
-
+ 
     /**
      * Fonction pour afficher les informations météo
      * @returns {Promise<void>}
      */
     async function affichageMeteo() {
         const weatherUrl = 'https://www.infoclimat.fr/public-api/gfs/json?_ll=48.67103,6.15083&_auth=ARsDFFIsBCZRfFtsD3lSe1Q8ADUPeVRzBHgFZgtuAH1UMQNgUTNcPlU5VClSfVZkUn8AYVxmVW0Eb1I2WylSLgFgA25SNwRuUT1bPw83UnlUeAB9DzFUcwR4BWMLYwBhVCkDb1EzXCBVOFQoUmNWZlJnAH9cfFVsBGRSPVs1UjEBZwNkUjIEYVE6WyYPIFJjVGUAZg9mVD4EbwVhCzMAMFQzA2JRMlw5VThUKFJiVmtSZQBpXGtVbwRlUjVbKVIuARsDFFIsBCZRfFtsD3lSe1QyAD4PZA%3D%3D&_c=19f3aa7d766b6ba91191c8be71dd1ab2';
-
+ 
         try {
             // Récupération des données
             const response = await fetch(weatherUrl);
             const data = await response.json();
-
+ 
             infoMeteoElement.innerHTML = '';
-
+ 
             // Récupération des données météo
             const currentDate = new Date();
             const currentTime = currentDate.getTime();
-
+ 
             // Affichage des informations météo
             for (const datetime in data) {
                 const forecastDate = new Date(datetime);
                 const forecastTime = forecastDate.getTime();
-
+ 
                 const hoursDifference = (forecastTime - currentTime) / (1000 * 60 * 60);
-
+ 
                 // Affichage des informations pour les 24 prochaines heures
                 if (hoursDifference > 0 && hoursDifference <= 24) {
                     const heureData = data[datetime];
-
+ 
                     const temperatureK = heureData.temperature['2m'];
                     const temperatureC = temperatureK - 273.15;
                     const pluie = heureData.pluie;
@@ -272,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const vent = ventMS * 3.6;
                     const neige = heureData.risque_neige;
                     const humidite = heureData.humidite['2m'];
-
+ 
                     const donnee = document.createElement('div');
                     donnee.className = 'infoMeteoCarre';
                     donnee.innerHTML = `
@@ -291,14 +294,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function popupReservation(){
+        popupReservationElement.style.display = 'block';
+    }
+ 
     /**
      * Ecouteur d'événement pour le bouton de la carte
      */
     buttonMapElement.addEventListener('click', function (event) {
         event.preventDefault();
+        filtreOptions.style.display = 'flex';
         affichageMaps();
     });
-
+ 
     /**
      * Ecouteur d'événement pour le bouton du compte rendu
      */
@@ -306,9 +314,10 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         mapElement.style.display = 'none';
         meteoElement.style.display = 'none';
+        filtreOptions.style.display = 'none';
         rapportElement.style.display = 'block';
     });
-
+ 
     /**
      * Ecouteur d'événement pour le bouton de la météo
      */
@@ -316,19 +325,56 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         mapElement.style.display = 'none';
         rapportElement.style.display = 'none';
+        filtreOptions.style.display = 'none';
         meteoElement.style.display = 'block';
         affichageMeteo();
     });
-
+ 
     document.addEventListener('change', function () {
         affichageMaps();
     })
+ 
+    document.querySelector('.btnQuitt').addEventListener('click', function () {
+        popupReservationElement.style.display = 'none';
+    });
+ 
+    document.getElementById('reservationForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        // Ajoutez ici le code pour gérer la soumission du formulaire
+        alert('Réservation sauvegardée!');
+        popupReservationElement.style.display = 'none';
+    });
 
+    document.getElementById('filterAjout').addEventListener('click', async function() {
+        const data = {
+            nom: 'Restaurant de test',
+            adresse: 'Adresse de test',
+            latitude: 0.0,
+            longitude: 0.0
+        };
+    
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' // Fixed typo here
+            },
+            body: JSON.stringify(data)
+        };
+    
+        try {
+            const response = await fetch("http://127.0.0.1:8000/restaurant", options);
+            console.log(response);
+            // Handle response here if needed
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+    
+ 
+    
     // Affichage de la carte
     if (mapInitialisation) {
         affichageMaps();
     }
 });
-
-
 

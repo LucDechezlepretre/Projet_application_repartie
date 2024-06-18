@@ -1,36 +1,37 @@
+
+
 #map, #report {
     height: 90vh;
     width: 100vw;
 }
-
+ 
 #map {
     display: block;
 }
-
+ 
 #report {
     display: none;
     margin-left: 50px;
 }
-
+ 
 #meteo {
     display: none;
     margin-left: 50px;
 }
-
+ 
 filterVelos {
     padding-right: 50px;
 }
-
+ 
 #titre {
     margin-top: 25px;
     margin-bottom: 30px;
     margin-left: -30px;
     text-decoration: underline;
 }
-
+ 
 #reservation {
         background-color: #5f8bea;
-    margin-top: 10px;
         color: white;
         /* Suppression de la bordure */
         border: none;
@@ -39,28 +40,56 @@ filterVelos {
         /* Positionnement du bouton */
         position: absolute;
         /* Centrage du bouton */
-        top: calc(80%);
+        top: calc(70%);
         left: 50%;
         transform: translateX(-50%);
 }
-
+ 
 #reservation:hover {
     background-color: white;
     color: #5f8bea;
 }
-
+ 
+.popupReservation {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+ 
+.popupReservation .btnQuitt {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+ 
+.popupReservation .btnSauv {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+ 
 .nom {
     color: grey;
     margin-bottom: 1px;
     font-size: 12px;
     margin-left: -40px;
 }
-
+ 
 .sousTitre {
     text-decoration: underline;
     margin-left: -15px;
 }
-
+ 
 .infoMeteoCarre {
     /*centre le bloc*/
     margin-left: 30%;
@@ -70,19 +99,29 @@ filterVelos {
     padding: 15px 15px 15px 5%;
     margin-top: 20px;
 }
-
-.filter-options {
+ 
+#filter-options {
     background: #d5a6f3;
     display: flex;
 }
-
+ 
 .filtre{
-    margin-left: 15%;
+    margin-left: 13%;
 }
 
+#filterAjout {
+    background-color: #d5a6f3;
+    /* Suppression de la bordure */
+    border: none;
+    /* Arrondir les coins du bouton */
+    border-radius: 5px;
+}
+
+#filterAjout:hover {
+    color: white;
+}
+ 
 nav{
     background-color: #e8c4ff;
 }
-
-
 
