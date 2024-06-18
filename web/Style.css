@@ -17,6 +17,9 @@
     margin-left: 50px;
 }
 
+filterVelos {
+    padding-right: 50px;
+}
 
 #titre {
     margin-top: 25px;
@@ -43,9 +46,17 @@
     /*taille du bloc*/
     width: 40%;
     background-color: #e8c4ff;
-    padding: 15px;
-    padding-left: 5%;
+    padding: 15px 15px 15px 5%;
     margin-top: 20px;
+}
+
+.filter-options {
+    background: #E8C4FFFF ;
+    display: flex;
+}
+
+.filtre{
+    margin-left: 15%;
 }
 
 nav{

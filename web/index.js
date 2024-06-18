@@ -11,6 +11,12 @@ document.addEventListener('DOMContentLoaded', function () {
     let buttonCompteRendu = document.getElementById('compteRendu');
     let buttonMeteoElement = document.getElementById('actuMeteo');
 
+    // Déclaration des cases à cocher pour les filtres
+    let filterVeloElement = document.getElementById('filterVelo');
+    let filterTraficElement = document.getElementById('filterTrafic');
+    let filterEcoleElement = document.getElementById('filterEcole');
+    let filterRestaurantElement = document.getElementById('filterRestaurant');
+
     // Déclaration des variables pour la carte
     let mapInitialisation = true;
     let map;
@@ -30,16 +36,23 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         map = L.map('map').setView([48.6921, 6.1844], 13);
-        L.Tooltip
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
         }).addTo(map);
 
-        affichageVelo(map);
-        affichageEcole(map);
-        affichageTrafic(map);
-        affichageRestaurant(map);
+        if(filterVeloElement.checked){
+            affichageVelo(map);
+        }
+        if(filterEcoleElement.checked){
+            affichageEcole(map);
+        }
+        if(filterTraficElement.checked){
+            affichageTrafic(map);
+        }
+        if(filterRestaurantElement.checked){
+            affichageRestaurant(map);
+        }
         mapInitialisation = false;
     }
 
@@ -253,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const ventMS = heureData.vent_moyen['10m'];
                     const vent = ventMS * 3.6;
                     const neige = heureData.risque_neige;
-                    const humidite = heureData.humidite;
+                    const humidite = heureData.humidite['2m'];
 
                     const donnee = document.createElement('div');
                     donnee.className = 'infoMeteoCarre';
@@ -302,10 +315,15 @@ document.addEventListener('DOMContentLoaded', function () {
         affichageMeteo();
     });
 
+    document.addEventListener('change', function () {
+        affichageMaps();
+    })
 
     // Affichage de la carte
     if (mapInitialisation) {
         affichageMaps();
     }
 });
+
+
 
