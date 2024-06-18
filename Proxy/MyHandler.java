@@ -33,7 +33,6 @@ public class MyHandler implements HttpHandler {
                 try{
                     ServiceDonneesBloquees s = (ServiceDonneesBloquees) reg.lookup("DonneeBloquee");
                     try{
-                        System.out.println(s.recupererDonneesBloquees());
                         JSONObject json = new JSONObject(s.recupererDonneesBloquees());
                         System.out.println("JSON récupéré");
                         byte[] fileContent = json.toString().getBytes();
@@ -62,6 +61,8 @@ public class MyHandler implements HttpHandler {
                         JSONObject json = new JSONObject(s.getRestaurants());
                         System.out.println("JSON RECUPERE");
                         byte[] fileContent = json.toString().getBytes();
+                        exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                        
                         exchange.sendResponseHeaders(200, fileContent.length);
                         OutputStream responseBody = exchange.getResponseBody();
     

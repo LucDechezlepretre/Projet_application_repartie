@@ -11,7 +11,7 @@ public class LancerService {
             ServiceBD serviceCentral = (ServiceBD) UnicastRemoteObject.exportObject(serviceRestaurant, 0);
 
             try {
-                Registry reg = LocateRegistry.createRegistry(1099);
+                Registry reg = LocateRegistry.getRegistry(1099);
 
                 try {
                     reg.rebind("RestaurantService", serviceCentral);

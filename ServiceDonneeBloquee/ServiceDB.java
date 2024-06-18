@@ -53,7 +53,7 @@ public class ServiceDB implements ServiceDonneesBloquees{
         try{
             ServiceDonneesBloquees service = (ServiceDonneesBloquees)UnicastRemoteObject.exportObject(serviceDB, 0);
             try{
-                Registry reg = LocateRegistry.createRegistry(1099); /* Création de l'annuaire */
+                Registry reg = LocateRegistry.getRegistry(1099); /* Création de l'annuaire */
                 
             //Un_port); 
             /* Un_port = un entier particulier ou 0 pour auto-assigné */
