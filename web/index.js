@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function () {
                        </div>
                             `);
                 });
-            })
+            });
                 .catch(error => {
                     console.log(error);
                 });
