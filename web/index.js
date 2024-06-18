@@ -5,17 +5,21 @@ document.addEventListener('DOMContentLoaded', function () {
     let meteoElement = document.getElementById('meteo');
     const infoMeteoElement = document.getElementById('infoMeteo');
 
-
     // Déclaration des boutons
     let buttonMapElement = document.getElementById('infoNancy');
     let buttonCompteRendu = document.getElementById('compteRendu');
     let buttonMeteoElement = document.getElementById('actuMeteo');
+    let popupReservationElement = document.querySelector('.popupReservation');
+
 
     // Déclaration des cases à cocher pour les filtres
     let filterVeloElement = document.getElementById('filterVelo');
     let filterTraficElement = document.getElementById('filterTrafic');
     let filterEcoleElement = document.getElementById('filterEcole');
     let filterRestaurantElement = document.getElementById('filterRestaurant');
+
+    // Récupération du modal
+    const modalReservation = document.getElementById('modalReservation');
 
     // Déclaration des variables pour la carte
     let mapInitialisation = true;
@@ -90,6 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 shadowSize: [41, 41]
             });
 
+
             stationInfo.forEach(station => {
                 const status = stationMap.get(station.station_id);
                 if (status) {
@@ -97,12 +102,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Affichage des informations des stations
                     marker.bindPopup(`
-                        <div>
                         <strong>${station.name}</strong><br>
                         Adresse: ${station.address}<br>
                         Vélos disponibles: ${status.num_bikes_available}<br>
-                        Places libres: ${status.num_docks_available}                      
-                        </div>
+                        Places libres: ${status.num_docks_available}<br><br>  
                     `);
                 }
             });
@@ -112,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Fonction pour afficher les écoles supperieurs
+     * Fonction pour afficher les établissements d'enseignement supérieur
      */
     async function affichageEcole(map) {
         // Récupération des données de la station
@@ -222,8 +225,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     marker.bindPopup(`
                         <div>
                             <strong>${restaurant.nom}</strong><br>
-                            Adresse : ${restaurant.adresse}<br>
-                            <button id="reservation" onclick="ouvrirModalReservation('${station.name}')">Réserver</button>
+                            Adresse : ${restaurant.adresse}<br><br>
+                            <button id="reservation" class="btn-reservation" data-bs-toggle="modal" data-bs-target="#modalReservation">Réserver</button>
                        </div>
                             `);
                 });
@@ -324,7 +327,35 @@ document.addEventListener('DOMContentLoaded', function () {
         affichageMaps();
     })
 
-    // Affichage de la carte
+    document.addEventListener('click' , function(event){
+        if(event.target.className === 'btn-reservation'){
+            let modal = new bootstrap.Modal(modalReservation);
+        }
+    });
+
+
+    document.querySelector('.submit-reservation').addEventListener('click', function(event){
+        const nomClient = document.querySelector('#nom-client').value;
+        const prenomClient = document.querySelector('#prenom-client').value;
+        const nbConvives = document.querySelector('#nb-convives').value;
+        const numTel = document.querySelector('#num-telephone').value;
+
+        if (nomClient === '' || prenomClient === '' || nbConvives === '' || numTel === '') {
+            alert("Veuillez remplir tous les champs");
+        }
+        else {
+            let json = {
+                nom: nomClient,
+                prenom: prenomClient,
+                nbConvives: nbConvives,
+                numTel: numTel
+            };
+            alert("Réservation effectuée avec succès");
+            fetch('http://localhost:8000/restaurant', {method: 'POST', body: JSON.stringify(json), headers: {'Content-Type': 'application/json'}});
+        }
+
+    });
+    
     if (mapInitialisation) {
         affichageMaps();
     }
