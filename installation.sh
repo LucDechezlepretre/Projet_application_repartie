@@ -1,18 +1,18 @@
 #!/bin/bash
 
 echo "Création de l'annuaire pour les services"
-rmiregistry -J-Djava.class.path=.:./Proxy/:./ServiceDonneesBloquees/:./Restaurant/service/ &
+rmiregistry -J-Djava.class.path=.:./Proxy/:./ServiceDonneeBloquee/:./Restaurant/service/ &
 
 #Compilation des fichiers interface
 
 echo "Compilation des interfaces"
-javac ./ServiceDonneesBloquees/*.java
+javac ./ServiceDonneeBloquee/*.java
 javac -cp .:ojdbc10.jar:json-20131018.jar ./Restaurant/service/*.java
 
 #Déplacement des fichiers nécessaire dans chaque dossier
 
 cp ./Restaurant/service/ServiceBD.class ./Proxy/
-cp ./ServiceDonneesBloquees/ServiceDonneesBloquees.class ./Proxy/
+cp ./ServiceDonneeBloquee/ServiceDonneesBloquees.class ./Proxy/
 
 #Compilation du reste des fichiers java
 
@@ -23,7 +23,7 @@ echo "Compilation du code du serveur et des proxy"
 #Lancement des services
 echo "Lancement des services"
 java -cp .:json-20131018.jar:ojdbc10.jar:./Restaurant/service/ LancerService &
-java -cp .:json-20131018.jar:./ServiceDonneesBloquees/ ServiceDB &
+java -cp .:json-20131018.jar:./ServiceDonneeBloquee/ ServiceDB &
 
 #Lancement du serveur http
 
