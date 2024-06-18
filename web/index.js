@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let rapportElement = document.getElementById('report');
     let meteoElement = document.getElementById('meteo');
     const infoMeteoElement = document.getElementById('infoMeteo');
- 
+
     // Déclaration des boutons
     let buttonMapElement = document.getElementById('infoNancy');
     let buttonCompteRendu = document.getElementById('compteRendu');
@@ -20,7 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let filterTraficElement = document.getElementById('filterTrafic');
     let filterEcoleElement = document.getElementById('filterEcole');
     let filterRestaurantElement = document.getElementById('filterRestaurant');
- 
+
+    // Récupération du modal
+    const modalReservation = document.getElementById('modalReservation');
     // Déclaration des variables pour la carte
     let mapInitialisation = true;
     let map;
@@ -93,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 tooltipAnchor: [16, -28],
                 shadowSize: [41, 41]
             });
- 
+
             stationInfo.forEach(station => {
                 const status = stationMap.get(station.station_id);
                 if (status) {
@@ -104,8 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <strong>${station.name}</strong><br>
                         Adresse: ${station.address}<br>
                         Vélos disponibles: ${status.num_bikes_available}<br>
-                        Places libres: ${status.num_docks_available}  
-               
+                        Places libres: ${status.num_docks_available}<br><br>  
                     `);
                 }
             });
@@ -115,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
  
     /**
-     * Fonction pour afficher les écoles supperieurs
+     * Fonction pour afficher les établissements d'enseignement supérieur
      */
     async function affichageEcole(map) {
         // Récupération des données de la station
@@ -226,14 +227,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div>
                             <strong>${restaurant.nom}</strong><br>
                             Adresse : ${restaurant.adresse}<br><br>
-                            <button id="reservation" onclick="popupReservation('${restaurant.nom}')">Réserver</button>
+
+                            <button id="reservation" class="btn-reservation" data-bs-toggle="modal" data-bs-target="#modalReservation">Réserver</button>
                        </div>
-                            `);
+                    `);
                 });
-            })
-                .catch(error => {
-                    console.log(error);
-                });
+            });
         } catch (error) {
             console.error('Erreurs de récupération des données des restaurants:', error);
         }
@@ -298,6 +297,17 @@ document.addEventListener('DOMContentLoaded', function () {
         popupReservationElement.style.display = 'block';
     }
  
+    function ajouterRestaurant(infoRestaurant) {
+        const marker = L.marker([infoRestaurant.latitude, infoRestaurant.longitude], {icon: infoRestaurantMarker}).addTo(map);
+
+        marker.bindPopup(`
+            <div>
+                <strong>${infoRestaurant.nom}</strong><br>
+                Adresse : ${infoRestaurant.adresse}<br><br>
+                <button id="reservation" class="btn-reservation" data-bs-toggle="modal" data-bs-target="#modalReservation">Réserver</button>
+           </div>
+        `);
+    }
     /**
      * Ecouteur d'événement pour le bouton de la carte
      */
@@ -373,6 +383,36 @@ document.addEventListener('DOMContentLoaded', function () {
  
     
     // Affichage de la carte
+
+    document.addEventListener('click' , function(event){
+        if(event.target.className === 'btn-reservation'){
+            let modal = new bootstrap.Modal(modalReservation);
+        }
+    });
+
+
+    document.querySelector('.submit-reservation').addEventListener('click', function(event){
+        const nomClient = document.querySelector('#nom-client').value;
+        const prenomClient = document.querySelector('#prenom-client').value;
+        const nbConvives = document.querySelector('#nb-convives').value;
+        const numTel = document.querySelector('#num-telephone').value;
+
+        if (nomClient === '' || prenomClient === '' || nbConvives === '' || numTel === '') {
+            alert("Veuillez remplir tous les champs");
+        }
+        else {
+            let json = {
+                nom: nomClient,
+                prenom: prenomClient,
+                nbConvives: nbConvives,
+                numTel: numTel
+            };
+            alert("Réservation effectuée avec succès");
+            fetch('http://localhost:8000/restaurant', {method: 'POST', body: JSON.stringify(json), headers: {'Content-Type': 'application/json'}});
+        }
+
+    });
+    
     if (mapInitialisation) {
         affichageMaps();
     }
