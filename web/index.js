@@ -97,10 +97,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Affichage des informations des stations
                     marker.bindPopup(`
+                        <div>
                         <strong>${station.name}</strong><br>
                         Adresse: ${station.address}<br>
                         Vélos disponibles: ${status.num_bikes_available}<br>
-                        Places libres: ${status.num_docks_available}
+                        Places libres: ${status.num_docks_available}                      
+                        </div>
                     `);
                 }
             });
@@ -172,7 +174,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 traficResultats.forEach(trafic => {
                     let coordonnees = trafic.location.polyline.split(' ');
-                    console.log(coordonnees);
                     const marker = L.marker([coordonnees[0], coordonnees[1]], {icon: traficMarker}).addTo(map);
 
                     marker.bindPopup(`
@@ -219,9 +220,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     const marker = L.marker([restaurant.latitude, restaurant.longitude], {icon: restaurantMarker}).addTo(map);
 
                     marker.bindPopup(`
-                        <strong>${restaurant.nom}</strong><br>
-                        Adresse : ${restaurant.adresse}<br>
-                        <button onclick="ouvrirModalReservation('${restaurant.nom}')">Réserver une table</button>
+                        <div>
+                            <strong>${restaurant.nom}</strong><br>
+                            Adresse : ${restaurant.adresse}<br>
+                            <button id="reservation" onclick="ouvrirModalReservation('${station.name}')">Réserver</button>
+                       </div>
                             `);
                 });
             })

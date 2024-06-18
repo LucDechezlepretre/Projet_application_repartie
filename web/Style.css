@@ -28,6 +28,27 @@ filterVelos {
     text-decoration: underline;
 }
 
+#reservation {
+        background-color: #5f8bea;
+    margin-top: 10px;
+        color: white;
+        /* Suppression de la bordure */
+        border: none;
+        /* Arrondir les coins du bouton */
+        border-radius: 5px;
+        /* Positionnement du bouton */
+        position: absolute;
+        /* Centrage du bouton */
+        top: calc(80%);
+        left: 50%;
+        transform: translateX(-50%);
+}
+
+#reservation:hover {
+    background-color: white;
+    color: #5f8bea;
+}
+
 .nom {
     color: grey;
     margin-bottom: 1px;
