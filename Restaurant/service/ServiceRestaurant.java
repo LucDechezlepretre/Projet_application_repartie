@@ -57,7 +57,7 @@ public class ServiceRestaurant implements ServiceBD {
 
             while (result.next()) {
                 System.out.println(result.getString(2));
-                restaurants.add(new Restaurant(result.getString(2), result.getString(3), 
+                restaurants.add(new Restaurant(result.getInt(1), result.getString(2), result.getString(3), 
                     result.getDouble(4), result.getDouble(5))); 
             }
             
