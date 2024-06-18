@@ -41,16 +41,16 @@ document.addEventListener('DOMContentLoaded', function () {
             maxZoom: 18,
         }).addTo(map);
 
-        if(filterVeloElement.checked){
+        if (filterVeloElement.checked) {
             affichageVelo(map);
         }
-        if(filterEcoleElement.checked){
+        if (filterEcoleElement.checked) {
             affichageEcole(map);
         }
-        if(filterTraficElement.checked){
+        if (filterTraficElement.checked) {
             affichageTrafic(map);
         }
-        if(filterRestaurantElement.checked){
+        if (filterRestaurantElement.checked) {
             affichageRestaurant(map);
         }
         mapInitialisation = false;
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
             stationInfo.forEach(station => {
                 const status = stationMap.get(station.station_id);
                 if (status) {
-                    const marker = L.marker([station.lat, station.lon], { icon: stationMarker }).addTo(map);
+                    const marker = L.marker([station.lat, station.lon], {icon: stationMarker}).addTo(map);
 
                     // Affichage des informations des stations
                     marker.bindPopup(`
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             ensSupResultats.forEach(etablissement => {
-                const marker = L.marker([etablissement.coordonnees['lat'], etablissement.coordonnees['lon']], { icon: etablissementsMarker }).addTo(map);
+                const marker = L.marker([etablissement.coordonnees['lat'], etablissement.coordonnees['lon']], {icon: etablissementsMarker}).addTo(map);
 
                 marker.bindPopup(`
                        <strong>${etablissement.implantation_lib}</strong><br>
@@ -173,12 +173,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 traficResultats.forEach(trafic => {
                     let coordonnees = trafic.location.polyline.split(' ');
                     console.log(coordonnees);
-                    const marker = L.marker([coordonnees[0], coordonnees[1]], { icon: traficMarker }).addTo(map);
+                    const marker = L.marker([coordonnees[0], coordonnees[1]], {icon: traficMarker}).addTo(map);
 
                     marker.bindPopup(`
                         <strong>${trafic.short_description}</strong><br>
                         Début : ${trafic.starttime.split('T')[0]}<br>
                         Fin : ${trafic.endtime.split('T')[0]}<br>
+                        
                             `);
                 });
             })
@@ -215,11 +216,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 restaurantResultats.forEach(restaurant => {
-                    const marker = L.marker([restaurant.latitude, restaurant.longitude], { icon: restaurantMarker }).addTo(map);
+                    const marker = L.marker([restaurant.latitude, restaurant.longitude], {icon: restaurantMarker}).addTo(map);
 
                     marker.bindPopup(`
                         <strong>${restaurant.nom}</strong><br>
                         Adresse : ${restaurant.adresse}<br>
+                        <button onclick="ouvrirModalReservation('${restaurant.nom}')">Réserver une table</button>
                             `);
                 });
             })

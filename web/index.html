@@ -22,7 +22,7 @@
     </div>
 </nav>
 
-<div class="filter-options" >
+<div class="filter-options">
     <div class="filtre"><input type="checkbox" id="filterVelo" checked> Vélos</div>
     <div class="filtre"><input type="checkbox" id="filterTrafic" checked> Trafic</div>
     <div class="filtre"><input type="checkbox" id="filterEcole" checked> Écoles</div>
@@ -80,6 +80,30 @@
         <li> tout ce qui est utile à la compréhension de votre travail.</li>
     </ul>
 </div>
+
+<div class="modal-header">
+    <h5 class="modal-title" id="reservationModalLabel">Réserver une table</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <form id="reservationForm">
+        <div class="mb-3">
+            <label for="nom" class="form-label">Nom</label>
+            <input type="text" class="form-control" id="nom" required>
+        </div>
+        <div class="mb-3">
+            <label for="prenom" class="form-label">Prénom</label>
+            <input type="text" class="form-control" id="prenom" required>
+        </div>
+        <div class="mb-3">
+            <label for="nombrePersonnes" class="form-label">Nombre de personnes</label>
+            <input type="number" class="form-control" id="nombrePersonnes" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Sauvegarder</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+    </form>
+</div>
+
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="./index.js"></script>
