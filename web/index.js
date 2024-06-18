@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             Adresse : ${restaurant.adresse}<br><br>
                             <button id="reservation" class="btn-reservation" data-bs-toggle="modal" data-bs-target="#modalReservation">Réserver</button>
                        </div>
-                            `);
+                    `);
                 });
             });
                 .catch(error => {
@@ -292,6 +292,18 @@ document.addEventListener('DOMContentLoaded', function () {
         } catch (error) {
             console.error('Erreur de récupération des données météo:', error);
         }
+    }
+
+    function ajouterRestaurant(infoRestaurant) {
+        const marker = L.marker([infoRestaurant.latitude, infoRestaurant.longitude], {icon: infoRestaurantMarker}).addTo(map);
+
+        marker.bindPopup(`
+            <div>
+                <strong>${infoRestaurant.nom}</strong><br>
+                Adresse : ${infoRestaurant.adresse}<br><br>
+                <button id="reservation" class="btn-reservation" data-bs-toggle="modal" data-bs-target="#modalReservation">Réserver</button>
+           </div>
+        `);
     }
 
     /**
