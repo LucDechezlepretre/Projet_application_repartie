@@ -1,12 +1,14 @@
+
+
 #map, #report {
     height: 90vh;
     width: 100vw;
 }
-
+ 
 #map {
     display: block;
 }
-
+ 
 #report {
     display: none;
     margin-left: 50px;
@@ -18,23 +20,23 @@
     padding: 15px 15px 15px 5%;
     margin-top: 20px;
 }
-
+ 
 #meteo {
     display: none;
     margin-left: 50px;
 }
-
+ 
 filterVelos {
     padding-right: 50px;
 }
-
+ 
 #titre {
     margin-top: 25px;
     margin-bottom: 30px;
     margin-left: -30px;
     text-decoration: underline;
 }
-
+ 
 #reservation {
         background-color: #5f8bea;
         color: white;
@@ -49,7 +51,7 @@ filterVelos {
         left: 50%;
         transform: translateX(-50%);
 }
-
+ 
 #reservation:hover {
     background-color: white;
     color: #5f8bea;
@@ -89,12 +91,12 @@ filterVelos {
     font-size: 12px;
     margin-left: -40px;
 }
-
+ 
 .sousTitre {
     text-decoration: underline;
     margin-left: -15px;
 }
-
+ 
 .infoMeteoCarre {
     /*centre le bloc*/
     margin-left: 30%;
@@ -104,19 +106,29 @@ filterVelos {
     padding: 15px 15px 15px 5%;
     margin-top: 20px;
 }
-
-.filter-options {
+ 
+#filter-options {
     background: #d5a6f3;
     display: flex;
 }
-
+ 
 .filtre{
-    margin-left: 15%;
+    margin-left: 13%;
 }
 
+#filterAjout {
+    background-color: #d5a6f3;
+    /* Suppression de la bordure */
+    border: none;
+    /* Arrondir les coins du bouton */
+    border-radius: 5px;
+}
+
+#filterAjout:hover {
+    color: white;
+}
+ 
 nav{
     background-color: #e8c4ff;
 }
-
-
 
