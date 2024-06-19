@@ -10,6 +10,13 @@
 #report {
     display: none;
     margin-left: 50px;
+    /*centre le bloc*/
+    margin-left: 30%;
+    /*taille du bloc*/
+    width: 40%;
+    background-color: #e8c4ff;
+    padding: 15px 15px 15px 5%;
+    margin-top: 20px;
 }
 
 #meteo {

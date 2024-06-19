@@ -231,9 +231,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     `);
                 });
             });
-                .catch(error => {
-                    console.log(error);
-                });
         } catch (error) {
             console.error('Erreurs de récupération des données des restaurants:', error);
         }
